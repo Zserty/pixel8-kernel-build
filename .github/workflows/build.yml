@@ -1,0 +1,38 @@
+name: Build Pixel Kernel
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y git bc bison flex libssl-dev libelf-dev python3 curl unzip
+
+    - name: Install repo tool
+      run: |
+        mkdir -p ~/bin
+        curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+        chmod +x ~/bin/repo
+        echo "export PATH=~/bin:$PATH" >> ~/.bashrc
+
+    - name: Init kernel source
+      run: |
+        mkdir kernel && cd kernel
+        ~/bin/repo init -u https://android.googlesource.com/kernel/manifest -b common-android14-5.15
+        ~/bin/repo sync -j4 --depth=1 --no-tags
+
+    - name: Build kernel
+      run: |
+        cd kernel
+        tools/bazel run //common:kernel_aarch64_dist
+
+    - name: Upload kernel
+      uses: actions/upload-artifact@v4
+      with:
+        name: kernel-output
+        path: kernel/out/dist/
