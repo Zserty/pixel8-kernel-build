@@ -18,13 +18,14 @@ jobs:
         mkdir -p ~/bin
         curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
         chmod +x ~/bin/repo
-        echo "export PATH=~/bin:$PATH" >> ~/.bashrc
+        echo "$HOME/bin" >> $GITHUB_PATH
 
     - name: Init kernel source
       run: |
-        mkdir kernel && cd kernel
-        ~/bin/repo init -u https://android.googlesource.com/kernel/manifest -b common-android14-5.15
-        ~/bin/repo sync -j4 --depth=1 --no-tags
+        mkdir kernel
+        cd kernel
+        repo init -u https://android.googlesource.com/kernel/manifest -b common-android14-5.15
+        repo sync -j4 --depth=1 --no-tags
 
     - name: Build kernel
       run: |
