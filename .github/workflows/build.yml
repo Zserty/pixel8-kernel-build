@@ -29,8 +29,10 @@ jobs:
 
     - name: Build kernel
       run: |
-        cd kernel
-        export LTO=none
+        cd kernel/common
+        scripts/config --file arch/arm64/configs/gki_defconfig -d LTO
+        scripts/config --file arch/arm64/configs/gki_defconfig -e LTO_NONE
+        cd ..
         tools/bazel run //common:kernel_aarch64_dist --jobs=4
 
     - name: Upload kernel
