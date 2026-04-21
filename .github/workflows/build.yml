@@ -30,9 +30,8 @@ jobs:
     - name: Build kernel
       run: |
         cd kernel
-        tools/bazel run //common:kernel_aarch64_dist \
-        --jobs=4 \
-        --config=fastbuild
+        export LTO=thin
+        tools/bazel run //common:kernel_aarch64_dist --jobs=2
         
 
     - name: Upload kernel
