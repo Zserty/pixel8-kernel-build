@@ -30,7 +30,8 @@ jobs:
     - name: Build kernel
       run: |
         cd kernel
-        tools/bazel run //common:kernel_aarch64_dist --jobs=4 -- --lto=none
+        export LTO=none
+        tools/bazel run //common:kernel_aarch64_dist --jobs=4
 
     - name: Upload kernel
       uses: actions/upload-artifact@v4
